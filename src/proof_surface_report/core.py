@@ -1,9 +1,9 @@
 """Render proof-surface JSON artifacts as a concise Markdown handoff report.
 
-This adapter is self-contained and stdlib-only. It consumes the neutral
-proof-surface packet shape plus EMET witness receipts and emits reviewer-facing
-Markdown. It does not certify, trust, approve, sign, upload, or enforce
-anything.
+This adapter validates against the shared ``proof-surface`` contract package
+(the single source of truth for the packet and witness-receipt shapes) and emits
+reviewer-facing Markdown. It does not certify, trust, approve, sign, upload, or
+enforce anything.
 """
 from __future__ import annotations
 
@@ -14,41 +14,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from proof_surface import PACKET_VERSION
+from proof_surface import validate_packet as validate_packet_shared
+from proof_surface import validate_witness_receipt as validate_witness_receipt_shared
+
 STATUS_ORDER = {"blocked": 3, "needs-polish": 2, "unknown": 1, "ready": 0}
-PACKET_STATUSES = {"ready", "needs-polish", "blocked", "unknown"}
-CHECK_STATUSES = {"pass", "warn", "fail", "unknown"}
-RECEIPT_VERDICTS = {
-    "MATCH",
-    "DRIFT",
-    "UNVERIFIABLE",
-    "COHERENT",
-    "VIEW_DIFFERS_FROM_SOURCE",
-    "CORROBORATED",
-    "QUARANTINE_READ_PATH_DIVERGENCE",
-}
-ROOT_FIELDS = {
-    "proof_surface_version",
-    "packet_id",
-    "surface",
-    "status",
-    "claims",
-    "checks",
-    "action_items",
-}
-CLAIM_FIELDS = {"claim", "evidence"}
-CHECK_FIELDS = {"tool", "status", "summary"}
-RECEIPT_FIELDS = {
-    "receipt_id",
-    "verdict",
-    "witness",
-    "subject",
-    "evidence",
-    "notes",
-}
-WITNESS_FIELDS = {"implementation", "spec_version", "self_sha256", "check"}
-SUBJECT_FIELDS = {"name", "digest"}
-DIGEST_FIELDS = {"sha256"}
-EVIDENCE_FIELDS = {"exit_code", "stdout_verdict_line"}
 AUTHORITY_PATTERNS = (
     (
         "authority-token",
@@ -87,7 +57,7 @@ def load_artifact(path: Path) -> tuple[str, dict[str, Any]]:
         data = json.load(handle)
     if not isinstance(data, dict):
         raise ValueError(f"{path} did not contain a JSON object")
-    if data.get("proof_surface_version") == "0.1":
+    if data.get("proof_surface_version") == PACKET_VERSION:
         validate_packet(path, data)
         return "packet", data
     if "receipt_id" in data and "verdict" in data:
@@ -97,70 +67,48 @@ def load_artifact(path: Path) -> tuple[str, dict[str, Any]]:
 
 
 def validate_packet(path: Path, data: dict[str, Any]) -> None:
-    issues: list[str] = []
-    reject_unknown(data, "$", ROOT_FIELDS, issues)
-    require_text(data, "packet_id", issues)
-    require_text(data, "surface", issues)
-    require_enum(data, "status", PACKET_STATUSES, issues)
-    reject_authority_language(data.get("surface"), "$.surface", issues)
-    validate_claims(data.get("claims"), issues)
-    validate_checks(data.get("checks"), issues)
-    validate_actions(data.get("action_items"), issues)
+    """Validate a proof-surface packet via the shared contract, then sweep for
+    authority-shaped wording in this adapter's reviewer-facing text fields.
+
+    Structural validation (field sets, status enum, version const, claim/check/
+    action shapes) is delegated to ``proof_surface.validate_packet`` — the single
+    source of truth for the packet contract. The case-insensitive authority-
+    language rejection is this adapter's own concern and is layered on top: the
+    shared packet validator deliberately does not editorialize free text.
+    """
+    issues = [f"{issue.path} {issue.message}" for issue in validate_packet_shared(data)]
+    sweep_packet_authority_language(data, issues)
     if issues:
         raise ValueError(f"{path} packet validation failed: " + "; ".join(issues))
 
 
 def validate_receipt(path: Path, data: dict[str, Any]) -> None:
-    issues: list[str] = []
-    reject_unknown(data, "$", RECEIPT_FIELDS, issues)
-    require_text(data, "receipt_id", issues)
-    require_enum(data, "verdict", RECEIPT_VERDICTS, issues)
-    validate_witness(data.get("witness"), issues)
-    validate_subjects(data.get("subject"), issues)
-    validate_receipt_evidence(data.get("evidence"), issues)
+    """Validate an EMET witness receipt via the shared consumer-side validator.
+
+    ``proof_surface.validate_witness_receipt`` mirrors EMET's witness-receipt
+    shape, enforces the closed verdict lattice, and recursively rejects EMET's
+    forbidden authority tokens across all free-text fields. This adapter adds its
+    own case-insensitive authority-language sweep over the notes field for the
+    reviewer-facing report.
+    """
+    issues = [f"{issue.path} {issue.message}" for issue in validate_witness_receipt_shared(data)]
     reject_authority_language(data.get("notes"), "$.notes", issues)
     if issues:
         raise ValueError(f"{path} receipt validation failed: " + "; ".join(issues))
 
 
-def reject_unknown(data: dict[str, Any], path: str, allowed: set[str], issues: list[str]) -> None:
-    for field in sorted(set(data) - allowed):
-        issues.append(f"{path}.{field} unexpected field")
-
-
-def require_text(
-    data: dict[str, Any],
-    field: str,
-    issues: list[str],
-    path: str | None = None,
-) -> None:
-    value = data.get(field)
-    if not isinstance(value, str) or not value.strip():
-        issues.append(f"{path or f'$.{field}'} expected non-empty string")
-
-
-def require_object(
-    value: Any,
-    path: str,
-    allowed: set[str],
-    issues: list[str],
-) -> dict[str, Any] | None:
-    if not isinstance(value, dict):
-        issues.append(f"{path} expected object")
-        return None
-    reject_unknown(value, path, allowed, issues)
-    return value
-
-
-def require_enum(
-    data: dict[str, Any],
-    field: str,
-    allowed: set[str],
-    issues: list[str],
-    path: str | None = None,
-) -> None:
-    if data.get(field) not in allowed:
-        issues.append(f"{path or f'$.{field}'} expected one of: {', '.join(sorted(allowed))}")
+def sweep_packet_authority_language(data: dict[str, Any], issues: list[str]) -> None:
+    """Reject authority-shaped wording in the packet's reviewer-facing text."""
+    reject_authority_language(data.get("surface"), "$.surface", issues)
+    for index, item in enumerate(array(data.get("claims"))):
+        if isinstance(item, dict):
+            reject_authority_language(item.get("claim"), f"$.claims[{index}].claim", issues)
+            reject_authority_language(item.get("evidence"), f"$.claims[{index}].evidence", issues)
+    for index, item in enumerate(array(data.get("checks"))):
+        if isinstance(item, dict):
+            reject_authority_language(item.get("summary"), f"$.checks[{index}].summary", issues)
+    for index, item in enumerate(array(data.get("action_items"))):
+        reject_authority_language(item, f"$.action_items[{index}]", issues)
 
 
 def reject_authority_language(value: Any, path: str, issues: list[str]) -> None:
@@ -169,95 +117,6 @@ def reject_authority_language(value: Any, path: str, issues: list[str]) -> None:
     for label, pattern in AUTHORITY_PATTERNS:
         if pattern.search(value):
             issues.append(f"{path} contains authority-shaped wording: {label}")
-
-
-def validate_claims(value: Any, issues: list[str]) -> None:
-    if not isinstance(value, list):
-        issues.append("$.claims expected array")
-        return
-    if not value:
-        issues.append("$.claims expected at least one item")
-    for index, item in enumerate(value):
-        if not isinstance(item, dict):
-            issues.append(f"$.claims[{index}] expected object")
-            continue
-        reject_unknown(item, f"$.claims[{index}]", CLAIM_FIELDS, issues)
-        require_text(item, "claim", issues, f"$.claims[{index}].claim")
-        require_text(item, "evidence", issues, f"$.claims[{index}].evidence")
-        reject_authority_language(item.get("claim"), f"$.claims[{index}].claim", issues)
-        reject_authority_language(item.get("evidence"), f"$.claims[{index}].evidence", issues)
-
-
-def validate_checks(value: Any, issues: list[str]) -> None:
-    if not isinstance(value, list):
-        issues.append("$.checks expected array")
-        return
-    if not value:
-        issues.append("$.checks expected at least one item")
-    for index, item in enumerate(value):
-        if not isinstance(item, dict):
-            issues.append(f"$.checks[{index}] expected object")
-            continue
-        reject_unknown(item, f"$.checks[{index}]", CHECK_FIELDS, issues)
-        require_text(item, "tool", issues, f"$.checks[{index}].tool")
-        require_enum(item, "status", CHECK_STATUSES, issues, f"$.checks[{index}].status")
-        require_text(item, "summary", issues, f"$.checks[{index}].summary")
-        reject_authority_language(item.get("summary"), f"$.checks[{index}].summary", issues)
-
-
-def validate_actions(value: Any, issues: list[str]) -> None:
-    if not isinstance(value, list):
-        issues.append("$.action_items expected array")
-        return
-    for index, item in enumerate(value):
-        if not isinstance(item, str) or not item.strip():
-            issues.append(f"$.action_items[{index}] expected non-empty string")
-            continue
-        reject_authority_language(item, f"$.action_items[{index}]", issues)
-
-
-def validate_witness(value: Any, issues: list[str]) -> None:
-    witness = require_object(value, "$.witness", WITNESS_FIELDS, issues)
-    if witness is None:
-        return
-    require_text(witness, "implementation", issues, "$.witness.implementation")
-    require_text(witness, "spec_version", issues, "$.witness.spec_version")
-    require_text(witness, "self_sha256", issues, "$.witness.self_sha256")
-    require_text(witness, "check", issues, "$.witness.check")
-    reject_authority_language(witness.get("implementation"), "$.witness.implementation", issues)
-    reject_authority_language(witness.get("check"), "$.witness.check", issues)
-
-
-def validate_subjects(value: Any, issues: list[str]) -> None:
-    if not isinstance(value, list):
-        issues.append("$.subject expected array")
-        return
-    for index, item in enumerate(value):
-        subject = require_object(item, f"$.subject[{index}]", SUBJECT_FIELDS, issues)
-        if subject is None:
-            continue
-        require_text(subject, "name", issues, f"$.subject[{index}].name")
-        reject_authority_language(subject.get("name"), f"$.subject[{index}].name", issues)
-        digest = require_object(
-            subject.get("digest"),
-            f"$.subject[{index}].digest",
-            DIGEST_FIELDS,
-            issues,
-        )
-        if digest is not None:
-            require_text(digest, "sha256", issues, f"$.subject[{index}].digest.sha256")
-
-
-def validate_receipt_evidence(value: Any, issues: list[str]) -> None:
-    evidence = require_object(value, "$.evidence", EVIDENCE_FIELDS, issues)
-    if evidence is None:
-        return
-    if not isinstance(evidence.get("exit_code"), int):
-        issues.append("$.evidence.exit_code expected integer")
-    line = evidence.get("stdout_verdict_line")
-    if not isinstance(line, str):
-        issues.append("$.evidence.stdout_verdict_line expected string")
-    reject_authority_language(line, "$.evidence.stdout_verdict_line", issues)
 
 
 def text(value: Any, default: str = "unknown") -> str:

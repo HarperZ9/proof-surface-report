@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
 keywords = ["proof-surface", "evidence", "markdown", "report", "handoff"]
-dependencies = []
+dependencies = ["proof-surface>=0.1"]
 
 [project.scripts]
 proof-surface-report = "proof_surface_report.cli:run"
