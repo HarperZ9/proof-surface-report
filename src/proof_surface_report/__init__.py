@@ -1,8 +1,9 @@
 """proof-surface-report: render proof-surface JSON artifacts as Markdown.
 
-A self-contained, stdlib-only adapter that validates a proof-surface packet or
-EMET witness receipt and renders a reviewer-facing Markdown handoff. It rejects
-authority-shaped wording and makes no certification, trust, or release decision.
+An adapter that validates a proof-surface packet or EMET witness receipt against
+the shared ``proof-surface`` contract package and renders a reviewer-facing
+Markdown handoff. It rejects authority-shaped wording and makes no certification,
+trust, or release decision.
 """
 from __future__ import annotations
 

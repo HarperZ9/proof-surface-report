@@ -105,7 +105,7 @@ class ProofSurfaceReportTests(unittest.TestCase):
                 packet(claims=[], checks=[]),
             )
 
-            with self.assertRaisesRegex(ValueError, r"\$\.claims expected at least one item"):
+            with self.assertRaisesRegex(ValueError, r"\$\.claims expected at least 1 item"):
                 proof_surface_report.render_report("Proof Surface Handoff Report", [path])
 
     def test_receipt_rejects_ungoverned_verdict(self):
