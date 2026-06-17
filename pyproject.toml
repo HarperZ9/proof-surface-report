@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "proof-surface-report"
+version = "0.1.0"
+description = "Render proof-surface JSON artifacts as a Markdown reviewer handoff (stdlib-only)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+keywords = ["proof-surface", "evidence", "markdown", "report", "handoff"]
+dependencies = []
+
+[project.scripts]
+proof-surface-report = "proof_surface_report.cli:run"
+
+[project.urls]
+Homepage = "https://github.com/HarperZ9/proof-surface-report"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
