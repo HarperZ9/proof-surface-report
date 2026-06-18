@@ -1,6 +1,12 @@
-# proof-surface-report
+# Proof Surface Report
 
-Render proof-surface JSON artifacts as a concise Markdown reviewer handoff.
+> Render proof-surface packets and receipts as reviewer-facing Markdown; rejects authority-shaped language on output.
+
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![python](https://img.shields.io/badge/python-3.11%2B-blue.svg)
+![version](https://img.shields.io/badge/version-0.1.0-informational.svg)
+[![CI](https://github.com/HarperZ9/proof-surface-report/actions/workflows/ci.yml/badge.svg)](https://github.com/HarperZ9/proof-surface-report/actions/workflows/ci.yml)
+[![part of: AI-accountability toolkit](https://img.shields.io/badge/part_of-AI--accountability_toolkit-7a5cff.svg)](https://harperz9.github.io)
 
 `proof-surface-report` is a small, self-contained, **stdlib-only** Python
 adapter. It validates two neutral artifact shapes and renders reviewer-facing
@@ -83,3 +89,8 @@ core; it depends only on the Python standard library.
 ## License
 
 [MIT](LICENSE)
+
+---
+**Zain Dana Harper** — small tools with explicit edges.
+[Portfolio](https://harperz9.github.io) · [HarperZ9](https://github.com/HarperZ9)
+<sub>Built with Claude Code; reviewed, tested, and owned by me.</sub>
