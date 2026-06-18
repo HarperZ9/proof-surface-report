@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "proof-surface-report"
 version = "0.1.0"
-description = "Render proof-surface JSON artifacts as a Markdown reviewer handoff (stdlib-only)."
+description = "Render proof-surface packets and receipts as reviewer-facing Markdown; rejects authority-shaped language on output."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
