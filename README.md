@@ -3,14 +3,16 @@
 > Render proof-surface packets and receipts as reviewer-facing Markdown; rejects authority-shaped language on output.
 
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-![python](https://img.shields.io/badge/python-3.11%2B-blue.svg)
+![python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
 ![version](https://img.shields.io/badge/version-0.1.0-informational.svg)
 [![CI](https://github.com/HarperZ9/proof-surface-report/actions/workflows/ci.yml/badge.svg)](https://github.com/HarperZ9/proof-surface-report/actions/workflows/ci.yml)
 [![part of: AI-accountability toolkit](https://img.shields.io/badge/part_of-AI--accountability_toolkit-7a5cff.svg)](https://harperz9.github.io)
 
-`proof-surface-report` is a small, self-contained, **stdlib-only** Python
-adapter. It validates two neutral artifact shapes and renders reviewer-facing
-Markdown:
+`proof-surface-report` is a small Python adapter. Its only runtime dependency
+is the shared [`proof-surface`](https://github.com/HarperZ9/proof-surface)
+contract package, which it uses to validate artifacts; beyond that it relies
+solely on the Python standard library. It validates two neutral artifact shapes
+and renders reviewer-facing Markdown:
 
 - a **proof-surface packet** (`proof_surface_version: "0.1"`): a surface, a
   status, factual claims with evidence, tool checks, and action items.
@@ -28,16 +30,18 @@ descriptively for what it does.
 
 ## Install
 
-The package uses a `src/` layout and has no runtime dependencies.
+The package uses a `src/` layout. Its single runtime dependency is the
+`proof-surface` contract package, which is distributed from git:
 
 ```bash
+pip install git+https://github.com/HarperZ9/proof-surface.git
 pip install .
 ```
 
 This installs a `proof-surface-report` console script.
 
 For local development without installing, put the package on the path with
-`PYTHONPATH=src`.
+`PYTHONPATH=src` (the `proof-surface` package must still be importable).
 
 ## Usage
 
@@ -62,6 +66,9 @@ proof-surface-report --title "Release Surface Handoff" examples/public-surface.p
 The report is written to stdout. On validation or IO error the tool prints an
 `error:` line to stderr and exits non-zero.
 
+For a step-by-step walkthrough with worked examples and expected output, see
+[USAGE.md](USAGE.md).
+
 ## Examples
 
 The `examples/` directory contains synthetic, public artifacts:
@@ -83,8 +90,9 @@ PYTHONPATH=src python -m pytest -q
 ## Provenance
 
 This adapter was extracted as a standalone tool from an internal reporting
-project. It is self-contained and shares no code with that project's reporting
-core; it depends only on the Python standard library.
+project. It shares no code with that project's reporting core; its only runtime
+dependency is the shared `proof-surface` contract package, and otherwise it uses
+only the Python standard library.
 
 ## License
 
