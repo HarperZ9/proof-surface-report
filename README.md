@@ -1,5 +1,40 @@
 # Proof Surface Report
 
+![Proof Surface Report hero](docs/brand/proof-surface-report-hero.png)
+
+> Render proof packets and receipts into reviewer-facing Markdown.
+
+Proof Surface Report turns proof-surface packets and compatible receipt files
+into a readable Markdown handoff. It validates input shape and rejects language
+that would overstate the output as approval, certification, or compliance.
+
+## Why it matters
+
+Receipts are useful only when reviewers can read them quickly. This tool keeps
+the report grounded in evidence while preventing handoff text from becoming a
+false authority claim.
+
+## Try it
+
+```bash
+python -m pip install -e .
+proof-surface-report examples/public-surface.packet.json examples/emet.receipt.json
+python -m pytest -q
+```
+
+## What to test first
+
+- Render the bundled example packet and receipt.
+- Override the title with `--title` and confirm language checks still apply.
+- Run the tests before changing report wording or validation rules.
+
+## Current status
+
+Small Python adapter with a CLI and synthetic examples. It is a reviewer handoff
+renderer, not a release approval system.
+
+## Existing technical notes
+
 > Render proof-surface packets and receipts as reviewer-facing Markdown; rejects authority-shaped language on output.
 
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
