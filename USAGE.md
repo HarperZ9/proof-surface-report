@@ -39,7 +39,7 @@ Exit code is `0` on success. On a missing file, malformed JSON, failed contract
 validation, or rejected (authority-shaped) wording, the tool prints a single
 `error: ...` line to **stderr** and exits `1`.
 
-## Example 1 — render the bundled artifacts
+## Example 1 -- render the bundled artifacts
 
 Renders two packets and one witness receipt into a single report. (Run from the
 repository root.)
@@ -100,7 +100,7 @@ The **aggregate status** is the worst status across all packets, ranked
 `blocked` > `needs-polish` > `unknown` > `ready`. Here `needs-polish` (from the
 public-surface packet) outranks `ready` (from the provenance packet).
 
-## Example 2 — a development checkout, single packet
+## Example 2 -- a development checkout, single packet
 
 No install required; run the module directly with `PYTHONPATH=src`:
 
@@ -150,7 +150,7 @@ not a certification, safety verdict, or authority claim.
 - none
 ```
 
-## Example 3 — override the title
+## Example 3 -- override the title
 
 The `--title` flag sets the H1. It is itself checked for authority-shaped
 wording.
@@ -177,7 +177,7 @@ error: report title validation failed: $.title contains authority-shaped wording
 
 (exit code `1`; nothing is written to stdout.)
 
-## Example 4 — using the API directly
+## Example 4 -- using the API directly
 
 `render_report` is the main entry point; it returns the report as a string and
 raises `ValueError` (or an `OSError` / `json.JSONDecodeError`) on bad input.
