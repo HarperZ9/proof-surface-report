@@ -108,9 +108,9 @@ For a step-by-step walkthrough with worked examples and expected output, see
 
 The `examples/` directory contains synthetic, public artifacts:
 
-- `public-surface.packet.json` — a public-release surface packet.
-- `provenance.packet.json` — a model-provenance packet.
-- `emet.receipt.json` — an EMET witness receipt.
+- `public-surface.packet.json` -- a public-release surface packet.
+- `provenance.packet.json` -- a model-provenance packet.
+- `emet.receipt.json` -- an EMET witness receipt.
 
 Keep claims factual and evidence-backed. Do not phrase them as approval,
 certification, compliance, or release safety; such phrasing is rejected before
@@ -134,7 +134,7 @@ only the Python standard library.
 [MIT](LICENSE)
 
 ---
-**Zain Dana Harper** — small tools with explicit edges.
+**Zain Dana Harper** -- small tools with explicit edges.
 [Portfolio](https://harperz9.github.io) · [HarperZ9](https://github.com/HarperZ9)
 <sub>Built with Claude Code; reviewed, tested, and owned by me.</sub>
 
@@ -146,3 +146,6 @@ Keep the public README, package metadata, and examples aligned with current beha
 python -m pip install -e ".[test]"
 python -m pytest
 ```
+
+See [AGENTS.md](AGENTS.md) for the repo-specific operating boundary and
+[CHANGELOG.md](CHANGELOG.md) for current delivery status.

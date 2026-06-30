@@ -71,7 +71,7 @@ def validate_packet(path: Path, data: dict[str, Any]) -> None:
     authority-shaped wording in this adapter's reviewer-facing text fields.
 
     Structural validation (field sets, status enum, version const, claim/check/
-    action shapes) is delegated to ``proof_surface.validate_packet`` — the single
+    action shapes) is delegated to ``proof_surface.validate_packet`` -- the single
     source of truth for the packet contract. The case-insensitive authority-
     language rejection is this adapter's own concern and is layered on top: the
     shared packet validator deliberately does not editorialize free text.
