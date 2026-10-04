@@ -23,3 +23,9 @@ jobs:
       - run: pip install git+https://github.com/HarperZ9/proof-surface.git
       - run: pip install -e ".[test]"
       - run: python -m pytest -q
+  art-receipts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Verify art receipt digests
+        run: python3 scripts/check_art_receipts.py
