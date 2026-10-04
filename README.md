@@ -1,10 +1,19 @@
-<p align="center"><img src=".github/assets/banner.png" alt="proof-surface-report" width="100%"></p>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/HarperZ9/proof-surface-report/main/docs/art/hero-dark.svg">
+  <img src="https://raw.githubusercontent.com/HarperZ9/proof-surface-report/main/docs/art/hero-light.svg" alt="proof-surface-report: Render proof packets and receipts into reviewer-facing Markdown. A fan of ruled sheets drawn in fine lines, the top sheet lit by a bright core." width="100%">
+</picture>
 
-# Proof Surface Report
+# proof-surface-report
 
-![Proof Surface Report hero](docs/brand/proof-surface-report-hero.png)
+Render proof packets and receipts into reviewer-facing Markdown.
 
-> Render proof packets and receipts into reviewer-facing Markdown.
+```
+python -m pip install -e .
+```
+
+[![CI](https://github.com/HarperZ9/proof-surface-report/actions/workflows/ci.yml/badge.svg)](https://github.com/HarperZ9/proof-surface-report/actions/workflows/ci.yml)
+[![license](https://img.shields.io/badge/license-MIT-e6e1d6?style=flat-square&labelColor=1a1712)](https://github.com/HarperZ9/proof-surface-report/blob/main/LICENSE)
+![python 3.10+](https://img.shields.io/badge/python-3.10%2B-e6e1d6?style=flat-square&labelColor=1a1712)
 
 Proof Surface Report turns proof-surface packets and compatible receipt files
 into a readable Markdown handoff. It validates input shape and rejects language
