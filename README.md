@@ -25,6 +25,47 @@ The [animated explainer](https://harperz9.github.io/repo-explainers/proof-surfac
 walks through the bundled packet and witness receipt rendered into one Markdown handoff, and the guards that refuse a certified title, an approved claim and a TRUSTED verdict. Every value on it is output from this repository. Its
 source is [docs/explainer/index.html](docs/explainer/index.html).
 
+## Watch
+
+No concept film fits this tool closely yet. The walkthrough below covers it in text, with real commands and output.
+
+Video walkthrough: coming with the next release.
+
+## Walkthrough
+
+Install it, run it once, then use the main feature. Each command below is real, and so is its output.
+
+1. **Install.** Install the proof-surface contract, then this package. Python 3.10 or newer.
+
+   ```text
+   $ pip install git+https://github.com/HarperZ9/proof-surface.git
+   $ git clone https://github.com/HarperZ9/proof-surface-report && cd proof-surface-report
+   $ pip install .
+   ```
+
+2. **First run: render a report.** Render a packet and a receipt into one report.
+
+   ```text
+   $ proof-surface-report examples/public-surface.packet.json examples/emet.receipt.json
+   # Proof Surface Handoff Report
+   This report summarizes proof-surface artifacts. It is an evidence handoff,
+   not a certification, safety verdict, or authority claim.
+   | Packets | 1 |  | Witness receipts | 1 |  | Aggregate status | needs-polish |
+   ### Claims
+   - Public text hygiene is checkable. Evidence: em-dash findings=1
+   ### Action Items
+   - README.md:14: replace em dash with plain punctuation
+   ## Witness Receipt: emet-verify-example-7d26e03c2a4f13b0
+   | Verdict | MATCH |
+   ```
+
+3. **An inflated title is refused.** A title that claims more than the evidence shows is refused.
+
+   ```text
+   $ proof-surface-report examples/public-surface.packet.json --title "Certified release review"
+   error: report title validation failed: $.title contains authority-shaped wording: certified
+   ```
+
 ## Why it matters
 
 Receipts are useful only when reviewers can read them quickly. This tool keeps
