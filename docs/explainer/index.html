@@ -121,6 +121,14 @@ footer.foot p{max-width:70ch;margin:0 0 .6rem}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition-duration:0s!important;animation-duration:0s!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
 }
+.film{margin:1rem 0 0;max-width:56rem}
+.film video{width:100%;height:auto;display:block;background:#000;border:1px solid var(--line)}
+.film figcaption{font-size:.9rem;color:var(--ink-soft);margin-top:.55rem;max-width:44rem;line-height:1.5}
+.soon{font-family:var(--font-mono);font-size:.8rem;color:var(--muted);margin-top:.8rem}
+ol.walkthrough{padding-left:1.4rem;max-width:56rem;margin:1rem 0 0}
+ol.walkthrough li{margin:0 0 1.4rem}
+ol.walkthrough h3{margin:0 0 .3rem;font-size:1.05rem}
+ol.walkthrough p{margin:0 0 .3rem;max-width:44rem}
 
 /* generic scene kit: a pipeline strip, an input/output panel, a case picker, a table */
 .kscene{display:flex;flex-direction:column;gap:.8rem}
@@ -174,6 +182,12 @@ footer.foot p{max-width:70ch;margin:0 0 .6rem}
   <p class="src">Source: <a href="https://github.com/HarperZ9/proof-surface-report/blob/a930401909cdaa4875c63c8561a4f8a696765c72/README.md">README.md</a> at a930401 (version 0.1.0)</p>
 </section>
 
+<section class="block wrap" aria-labelledby="watch">
+  <h2 id="watch">Watch</h2>
+  <p class="measure">No concept film fits this tool closely yet. The walkthrough below covers it in text, with real commands and output.</p>
+  <p class="soon">Video walkthrough: coming with the next release.</p>
+</section>
+
 <section class="block wrap" aria-labelledby="how">
   <h2 id="how">How it works, one step at a time</h2>
   <p class="measure">Scroll, or use the step buttons. The panel renders the bundled synthetic examples, <code>examples/public-surface.packet.json</code> and <code>examples/emet.receipt.json</code>. Every line is output from proof-surface-report at commit a930401.</p>
@@ -223,13 +237,30 @@ footer.foot p{max-width:70ch;margin:0 0 .6rem}
   </div>
 </section>
 
-<section class="block wrap" aria-labelledby="try">
-  <h2 id="try">Try it</h2>
-  <div class="measure"><p>Install the proof-surface contract from git, then this package (Python 3.10 or newer).</p></div>
+<section class="block wrap" aria-labelledby="walkthrough">
+  <h2 id="walkthrough">Walkthrough</h2>
+  <p class="measure">Install it, run it once, then use the main feature. Each command below is real, and so is its output.</p>
+  <ol class="walkthrough">
+    <li><h3>Install</h3><p>Install the proof-surface contract, then this package. Python 3.10 or newer.</p>
 <pre class="cmd"><code>$ pip install git+https://github.com/HarperZ9/proof-surface.git
 $ git clone https://github.com/HarperZ9/proof-surface-report && cd proof-surface-report
-$ pip install .
-$ proof-surface-report examples/public-surface.packet.json examples/emet.receipt.json</code></pre>
+$ pip install .</code></pre></li>
+    <li><h3>First run: render a report</h3><p>Render a packet and a receipt into one report.</p>
+<pre class="cmd"><code>$ proof-surface-report examples/public-surface.packet.json examples/emet.receipt.json
+<span class="out"># Proof Surface Handoff Report
+This report summarizes proof-surface artifacts. It is an evidence handoff,
+not a certification, safety verdict, or authority claim.
+| Packets | 1 |  | Witness receipts | 1 |  | Aggregate status | needs-polish |
+### Claims
+- Public text hygiene is checkable. Evidence: em-dash findings=1
+### Action Items
+- README.md:14: replace em dash with plain punctuation
+## Witness Receipt: emet-verify-example-7d26e03c2a4f13b0
+| Verdict | MATCH |</span></code></pre></li>
+    <li><h3>An inflated title is refused</h3><p>A title that claims more than the evidence shows is refused.</p>
+<pre class="cmd"><code>$ proof-surface-report examples/public-surface.packet.json --title &quot;Certified release review&quot;
+<span class="out">error: report title validation failed: $.title contains authority-shaped wording: certified</span></code></pre></li>
+  </ol>
   <p class="src">Output from proof-surface-report at a930401 with proof-surface on the path. The two refused files change one field each in copies of the bundled examples.</p>
 </section>
 
