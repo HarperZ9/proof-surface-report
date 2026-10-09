@@ -19,6 +19,12 @@ Proof Surface Report turns proof-surface packets and compatible receipt files
 into a readable Markdown handoff. It validates input shape and rejects language
 that would overstate the output as approval, certification, or compliance.
 
+## See it work, step by step
+
+The [animated explainer](https://harperz9.github.io/repo-explainers/proof-surface-report.html)
+walks through the bundled packet and witness receipt rendered into one Markdown handoff, and the guards that refuse a certified title, an approved claim and a TRUSTED verdict. Every value on it is output from this repository. Its
+source is [docs/explainer/index.html](docs/explainer/index.html).
+
 ## Why it matters
 
 Receipts are useful only when reviewers can read them quickly. This tool keeps
