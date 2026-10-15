@@ -25,12 +25,6 @@ The [animated explainer](https://harperz9.github.io/repo-explainers/proof-surfac
 walks through the bundled packet and witness receipt rendered into one Markdown handoff, and the guards that refuse a certified title, an approved claim and a TRUSTED verdict. Every value on it is output from this repository. Its
 source is [docs/explainer/index.html](docs/explainer/index.html).
 
-## Watch
-
-No concept film fits this tool closely yet. The walkthrough below covers it in text, with real commands and output.
-
-Video walkthrough: coming with the next release.
-
 ## Walkthrough
 
 Install it, run it once, then use the main feature. Each command below is real, and so is its output.
