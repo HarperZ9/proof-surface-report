@@ -176,7 +176,7 @@ ol.walkthrough p{margin:0 0 .3rem;max-width:44rem}
   <ul class="uses">
     <li><b>One readable handoff</b>Packets and receipts in, one Markdown report out, with sources named.</li>
     <li><b>Shape checked first</b>Unknown fields and ungoverned verdicts are rejected before anything renders.</li>
-    <li><b>No authority words</b>Certified, approved, compliant and safe to release are refused in titles, claims and verdicts.</li>
+    <li><b>A wording guard</b>Titles, claims and verdicts that use certified, approved, compliant or safe to release are refused.</li>
     <li><b>A small adapter</b>Standard library plus the shared proof-surface contract package.</li>
   </ul>
   <p class="src">Source: <a href="https://github.com/HarperZ9/proof-surface-report/blob/a930401909cdaa4875c63c8561a4f8a696765c72/README.md">README.md</a> at a930401 (version 0.1.0)</p>
@@ -219,7 +219,7 @@ ol.walkthrough p{margin:0 0 .3rem;max-width:44rem}
       </div></li>
       <li class="step" tabindex="-1" data-scene="k3" data-state="s"><div class="card">
         <span class="num">04</span><h3>Shape is checked before wording</h3>
-        <p>Add a field the packet contract does not define, such as <code>reviewer_signoff</code>, and validation fails before rendering starts. A handoff cannot carry a sign-off field in through the side.</p>
+        <p>Add a field outside the packet contract, such as <code>reviewer_signoff</code>, and validation fails before rendering starts. The contract lists every field a handoff may carry, so a sign-off has to come from the reviewer.</p>
         <p class="src">Source: the proof-surface packet contract; <a href="https://github.com/HarperZ9/proof-surface-report/blob/a930401909cdaa4875c63c8561a4f8a696765c72/src/proof_surface_report/core.py">src/proof_surface_report/core.py</a></p>
       </div></li>
       <li class="step" tabindex="-1" data-scene="k4" data-state="s"><div class="card">
@@ -259,9 +259,9 @@ not a certification, safety verdict, or authority claim.
 </section>
 
 <section class="block wrap" aria-labelledby="limits">
-  <h2 id="limits">What it does not do</h2>
+  <h2 id="limits">Limits</h2>
   <ul class="limits">
-    <li>It renders a handoff. It is not a release approval system and makes no certification, safety or compliance finding.</li>
+    <li>It renders a handoff for a reviewer. Release approval and any certification, safety or compliance finding stay with that reviewer.</li>
     <li>The wording guard catches the words on its list. A claim can still overstate in other words, and a reviewer reads for that.</li>
     <li>It validates two artifact shapes, proof-surface packets and EMET witness receipts. Other shapes are rejected.</li>
   </ul>
